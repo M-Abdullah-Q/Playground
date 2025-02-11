@@ -1,102 +1,84 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
-import styles from "./page.module.css";
-
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
-
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
-
-  return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
+"use client"
+import { useState } from 'react'
+import { Settings, Code2, Play } from 'lucide-react'
+import { Button } from '../components/ui/button'
+import { ThemeToggle } from '../components/theme-toggle'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
+import { Card } from '../components/ui/card'
+import CodeEditor from '@/components/CodeEditor'
+import Header from '@/components/Header'
+import IOspace from '@/components/IOspace'
+import RunButton from '@/components/RunButton'
+import LanguageSelector from '@/components/LanguageSelector'
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <ThemeImage
-          className={styles.logo}
-          srcLight="turborepo-dark.svg"
-          srcDark="turborepo-light.svg"
-          alt="Turborepo logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new/clone?demo-description=Learn+to+implement+a+monorepo+with+a+two+Next.js+sites+that+has+installed+three+local+packages.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4K8ZISWAzJ8X1504ca0zmC%2F0b21a1c6246add355e55816278ef54bc%2FBasic.png&demo-title=Monorepo+with+Turborepo&demo-url=https%3A%2F%2Fexamples-basic-web.vercel.sh%2F&from=templates&project-name=Monorepo+with+Turborepo&repository-name=monorepo-turborepo&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fturborepo%2Ftree%2Fmain%2Fexamples%2Fbasic&root-directory=apps%2Fdocs&skippable-integrations=1&teamSlug=vercel&utm_source=create-turbo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://turbo.build/repo/docs?utm_source"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+  const [currentLanguage, setCurrentLanguage] = useState('javascript')
+  const [code, setCode] = useState(getDefaultCode(currentLanguage))
+
+  function getDefaultCode(lang: string) {
+    switch (lang) {
+      case 'javascript':
+        return '// Write your JavaScript code here\n\n';
+      case 'python':
+        return '# Write your Python code here\n\n';
+      case 'java':
+        return 'public class Main {\n    public static void main(String[] args) {\n        // Write your Java code here\n    }\n}';
+      case 'cpp':
+        return '#include <iostream>\n\nint main() {\n    // Write your C++ code here\n    return 0;\n}';
+      default:
+        return '// Write your code here\n';
+    }
+  }
+
+  const handleLanguageChange = (language: string) => {
+    setCurrentLanguage(language)
+    setCode(getDefaultCode(language))
+    console.log(currentLanguage);
+  }
+
+  const handleRun = () => {
+    console.log("run clicked");
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header></Header>
+
+      {/* Run Button */}
+      <RunButton handleRun={handleRun}/>
+
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-2 grid grid-cols-2 gap-6 h-[calc(100vh-73px)]">
+        {/* Problem Statement */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Problem Statement</h2>
+          <div className="prose dark:prose-invert">
+            <p>Write a function that...</p>
+          </div>
+        </Card>
+
+        {/* Code Editor and I/O */}
+        <div className="flex flex-col gap-6">
+          <Card className="p-4 flex-1">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold mb-4">Code Editor</h2>
+              <div className='py-2 items-center'>
+              <LanguageSelector 
+                onLanguageChange={handleLanguageChange} 
+                className="mx-auto" // optional custom classes
+              />
+              </div>
+            </div>
+            <div className="">
+              <CodeEditor code={code} language={currentLanguage} />
+            </div>
+          </Card>
+
+          <IOspace></IOspace>
         </div>
-        <Button appName="web" className={styles.secondary}>
-          Open alert
-        </Button>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com/templates?search=turborepo&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://turbo.build?utm_source=create-turbo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to turbo.build →
-        </a>
-      </footer>
+      </div>
     </div>
-  );
+  )
 }
