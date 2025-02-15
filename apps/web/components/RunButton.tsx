@@ -1,13 +1,16 @@
 "use client"
 import { Button } from '../components/ui/button'
 import { Play } from 'lucide-react'
+import { useCodeContext } from './CodeProvider'
 
+const RunButton = () => {
 
-interface RunButtonProps{
-    handleRun : () => void
-}
+  const {language, code, languageCode} = useCodeContext();
 
-const RunButton = ({handleRun}: RunButtonProps) => {
+  const handleRun = () => {
+    console.log(code);
+  }
+
     return (
         <div className="container mx-auto px-4 py-2 flex justify-center">
         <Button
