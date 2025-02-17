@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { Settings, Code2, Play } from 'lucide-react'
 import { Button } from '../components/ui/button'
-import { ThemeToggle } from '../components/theme-toggle'
+import { ThemeToggle } from './theme-toggle'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Card } from '../components/ui/card'
 

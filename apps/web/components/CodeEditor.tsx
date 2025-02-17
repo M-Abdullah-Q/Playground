@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { EditorProps, useMonaco } from "@monaco-editor/react";
 import { useTheme } from "next-themes";
-import { useCodeContext } from "./CodeProvider";
+import { useCodeContext } from "../providers/CodeProvider";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,

@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '../components/ui/button'
 import { Play } from 'lucide-react'
-import { useCodeContext } from './CodeProvider'
+import { useCodeContext } from '../providers/CodeProvider'
 
 const RunButton = () => {
 

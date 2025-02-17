@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Check, ChevronDown, Search, X, Code2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useCodeContext } from "@/components/CodeProvider";
+import { useCodeContext } from "@/providers/CodeProvider";
 
 export default function LanguageSelector({ className }: { className?: string }) {
   const { languages, language, setLanguage, setLanguageCode, boilerplates } = useCodeContext();

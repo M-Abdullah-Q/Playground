@@ -5,7 +5,7 @@ import Header from '@/components/Header'
 import IOspace from '@/components/IOspace'
 import RunButton from '@/components/RunButton'
 import LanguageSelector from '@/components/LanguageSelector'
-import { CodeProvider } from '@/components/CodeProvider'
+import { CodeProvider } from '@/providers/CodeProvider'
 
 export default function Home() {
 
@@ -33,7 +33,7 @@ export default function Home() {
                 <CodeEditor/>
               </div>
             </Card>
-            
+
             <IOspace></IOspace>
           </div>
         </div>
