@@ -14,12 +14,11 @@ const CodeEditor = () => {
   const { theme } = useTheme();
   const { language, boilerplates, code, setCode } = useCodeContext();
 
-  // Update code when the language changes
+  // todo : memoise the code on change
   useEffect(() => {
     setCode(boilerplates[language] || "");
   }, [language, boilerplates, setCode]);
 
-  // Update the editor value when the language changes
   useEffect(() => {
     setCode(boilerplates[language] || "");
   }, [language, boilerplates]);

@@ -5,7 +5,6 @@ import { createContext, ReactNode, useState, useContext } from "react";
 interface Language {
   value: string;
   label: string;
-  icon: string;
 }
 
 interface CodeContextType {
@@ -20,10 +19,10 @@ interface CodeContextType {
 }
 
 const languages: Language[] = [
-  { value: "cpp", label: "C++", icon: "🔧" },
-  { value: "java", label: "Java", icon: "☕" },
-  { value: "javascript", label: "JavaScript", icon: "💛" },
-  { value: "python", label: "Python", icon: "🐍" },
+  { value: "cpp", label: "C++"},
+  { value: "java", label: "Java"},
+  { value: "javascript", label: "JavaScript"},
+  { value: "python", label: "Python" },
 ];
 
 const boilerplates: Record<string, string> = {

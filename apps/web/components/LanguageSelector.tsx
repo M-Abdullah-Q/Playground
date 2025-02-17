@@ -65,7 +65,6 @@ export default function LanguageSelector({ className }: { className?: string }) 
           <span className="truncate font-medium">
             {selectedLanguage ? (
               <span className="flex items-center gap-2">
-                <span className="text-base">{selectedLanguage.icon}</span>
                 {selectedLanguage.label}
               </span>
             ) : "Select language"}
@@ -113,7 +112,6 @@ export default function LanguageSelector({ className }: { className?: string }) 
                     language === lang.value && "bg-gray-100 dark:bg-gray-800"
                   )}
                 >
-                  <span className="text-base mr-2">{lang.icon}</span>
                   <span className="flex-1 text-left">{lang.label}</span>
                   {language === lang.value && <Check className="w-4 h-4 text-primary" />}
                 </button>
