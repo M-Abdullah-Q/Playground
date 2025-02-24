@@ -5,10 +5,11 @@ import { useCodeContext } from '../providers/CodeProvider'
 
 const RunButton = () => {
 
-  const {language, code, languageCode} = useCodeContext();
+  const {languages, language, code, languageId} = useCodeContext();
 
   const handleRun = () => {
     console.log(code);
+    console.log(languageId);
   }
 
     return (

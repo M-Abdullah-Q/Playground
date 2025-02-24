@@ -15,9 +15,6 @@ const CodeEditor = () => {
   const { language, boilerplates, code, setCode } = useCodeContext();
 
   // todo : memoise the code on change
-  useEffect(() => {
-    setCode(boilerplates[language] || "");
-  }, [language, boilerplates, setCode]);
 
   useEffect(() => {
     setCode(boilerplates[language] || "");

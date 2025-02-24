@@ -5,43 +5,44 @@ import { createContext, ReactNode, useState, useContext } from "react";
 interface Language {
   value: string;
   label: string;
+  id: string;
 }
 
 interface CodeContextType {
   languages: Language[];
   language: string;
   setLanguage: (lang: string) => void;
-  languageCode: string;
-  setLanguageCode: (langCode: string) => void;
+  languageId: string;
+  setLanguageId: (langCode: string) => void;
   code: string;
   setCode: (code: string) => void;
   boilerplates: Record<string, string>;
+  setBoilerplates: React.Dispatch<React.SetStateAction<{ cpp: string; java: string; javascript: string; python: string; }>>;
 }
 
 const languages: Language[] = [
-  { value: "cpp", label: "C++"},
-  { value: "java", label: "Java"},
-  { value: "javascript", label: "JavaScript"},
-  { value: "python", label: "Python" },
+  { value: "cpp", label: "C++", id: "54"},
+  { value: "java", label: "Java", id: "91"},
+  { value: "javascript", label: "JavaScript", id:"102"},
+  { value: "python", label: "Python", id: "100"},
 ];
-
-const boilerplates: Record<string, string> = {
-  cpp: "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hello, World!\";\n  return 0;\n}",
-  java: "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"Hello, World!\");\n  }\n}",
-  javascript: "console.log(\"Hello, World!\");",
-  python: "print(\"Hello, World!\")",
-};
 
 const CodeContext = createContext<CodeContextType | undefined>(undefined);
 
 export function CodeProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState("javascript");
-  const [languageCode, setLanguageCode] = useState(boilerplates["javascript"]);
-  const [code,setCode] = useState("");
+  const [boilerplates, setBoilerplates] = useState({
+    cpp: "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hello, World!\";\n  return 0;\n}",
+    java: "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"Hello, World!\");\n  }\n}",
+    javascript: "console.log(\"Hello, World!\");",
+    python: "print(\"Hello, World!\")",
+  });
+  const [languageId,setLanguageId] = useState("102");
+  const [code,setCode] = useState(boilerplates["javascript"]);
 
   return (
     <CodeContext.Provider
-      value={{ languages, language, setLanguage, languageCode, setLanguageCode, boilerplates, code,setCode}}
+      value={{ languages, language, setLanguage, languageId, setLanguageId, boilerplates, code, setCode, setBoilerplates}}
     >
       {children}
     </CodeContext.Provider>

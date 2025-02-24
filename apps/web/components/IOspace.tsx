@@ -1,36 +1,60 @@
-"use client"
-import { useState } from 'react'
-import { Settings, Code2, Play } from 'lucide-react'
-import { Button } from '../components/ui/button'
-import { ThemeToggle } from './theme-toggle'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
-import { Card } from '../components/ui/card'
+"use client";
+import { Card } from "../components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { useQuestionContext } from "@/providers/QuestionProvider";
 
 const IOspace = () => {
-    const [input, setInput] = useState('')
-    return(
-        <Card className="p-6">
-            <Tabs defaultValue="input" className="h-[200px]">
-              <TabsList>
-                <TabsTrigger value="input">Input</TabsTrigger>
-                <TabsTrigger value="output">Output</TabsTrigger>
-              </TabsList>
-              <TabsContent value="input">
-                <textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  className="w-full h-[140px] bg-muted p-4 rounded-md font-mono"
-                  placeholder="Enter input here..."
-                />
-              </TabsContent>
-              <TabsContent value="output">
-                <div className="w-full h-[140px] bg-muted p-4 rounded-md font-mono">
-                  Output will appear here...
-                </div>
-              </TabsContent>
-            </Tabs>
-          </Card>
-    )
-}
+  const { tests } = useQuestionContext();
 
-export default IOspace
+  return (
+    <Card className="p-6 bg-background text-foreground shadow-md rounded-lg">
+      <h2 className="text-xl font-semibold mb-4">Test Cases</h2>
+
+      <Tabs defaultValue="test-0" className="h-[250px] overflow-hidden">
+        <div className="relative">
+          <div className="overflow-x-auto whitespace-nowrap scrollbar-none rounded-lg" style={{ 
+            WebkitOverflowScrolling: 'touch', 
+            msOverflowStyle: 'none', 
+            scrollbarWidth: 'none' 
+          }}>
+            <TabsList className="flex space-x-2 min-w-max">
+              {tests.map((_, index) => (
+                <TabsTrigger key={index} value={`test-${index}`} className="text-sm px-4">
+                  Test {index + 1}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+        </div>
+        <div className="mt-4 max-h-[180px] overflow-y-auto whitespace-nowrap scrollbar-none rounded-lg" style={{ 
+            WebkitOverflowScrolling: 'touch', 
+            msOverflowStyle: 'none', 
+            scrollbarWidth: 'none' 
+          }}>
+          {tests.map((test, index) => (
+            <TabsContent key={index} value={`test-${index}`}>
+              <div className="p-4 rounded-md bg-muted border border-border">
+                <p className="font-semibold text-sm">Input:</p>
+                <textarea
+                  value={test.input}
+                  readOnly
+                  className="w-full h-[80px] bg-background text-foreground p-2 rounded-md font-mono border border-border resize-none"
+                />
+                <p className="font-semibold text-sm mt-2">Expected Output:</p>
+                <textarea 
+                  className="w-full h-[40px] bg-background text-foreground p-2 rounded-md font-mono border border-border flex items-center resize-none"
+                  readOnly
+                  value={test.output}
+                >
+                  {/* {test.output} */}
+                </textarea>
+              </div>
+            </TabsContent>
+          ))}
+        </div>
+      </Tabs>
+    </Card>
+  );
+};
+
+export default IOspace;

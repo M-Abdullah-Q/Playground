@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useCodeContext } from "@/providers/CodeProvider";
 
 export default function LanguageSelector({ className }: { className?: string }) {
-  const { languages, language, setLanguage, setLanguageCode, boilerplates } = useCodeContext();
+  const { languages, language, setLanguage, setLanguageId, boilerplates } = useCodeContext();
   
   const [isOpen, setIsOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -36,9 +36,13 @@ export default function LanguageSelector({ className }: { className?: string }) 
     }
   }, [isOpen]);
 
-  const handleSelect = (value: string) => {
-    setLanguage(value);
-    setLanguageCode(boilerplates[value] || "");
+  const handleSelect = (selectedValue: string) => {
+    const selectedLang = languages.find((lang) => lang.value === selectedValue);
+    if (!selectedLang) return;
+
+    setLanguage(selectedLang.value);
+    setLanguageId(selectedLang.id);
+    // setCode(boilerplates[selectedLang.value]); // Update code editor with the correct boilerplate
     setIsOpen(false);
     setSearchQuery("");
   };
