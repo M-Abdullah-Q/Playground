@@ -61,8 +61,15 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         const sampleTestsNode = document.querySelector(".sample-tests");
         let tests: TestType[] = [];
 
-        let singleFlag = true;
-        if(!inputDescriptionHTML.includes('Each test contains multiple test cases')) singleFlag = false;
+        const testNode = sampleTestsNode?.querySelector(".sample-test");
+        if(testNode?.children && testNode?.children.length > 2){
+            return {
+                error : 'Depricated/Not Found'
+            }
+        }
+
+        // let singleFlag = true;
+        // if(!inputDescriptionHTML.includes('Each test contains multiple test cases')) singleFlag = false;
 
         if (sampleTestsNode) {
             const inputNodes = sampleTestsNode.querySelectorAll('.input pre');
@@ -83,7 +90,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
                     if (!match) return;
 
                     let testCaseIndex = parseInt(match[1], 10);
-                    if (testCaseIndex === 0 && singleFlag) return; // Ignore index 0 as it's the count
+                    if (testCaseIndex === 0) return; //Ignoring the 0th one cz its count
 
                     let text = div.textContent?.trim();
                     if (!inputMap.has(testCaseIndex)) {
@@ -96,12 +103,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
             // Extract output lines
             outputNodes.forEach((outputNode) => {
                 let outputLines : string[] = []
-                if(!singleFlag){
-                    outputLines[0] = outputNode.textContent?.trim() || '';
-                }
-                else{
-                    outputLines = outputNode.textContent?.trim().split("\n") || [];
-                }
+                outputLines = outputNode.textContent?.trim().split("\n") || [];
                 outputArray.push(...outputLines);
             });
 
@@ -130,6 +132,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     );
 
     await browser.close();
+
+    if(details.error){
+        return NextResponse.json({error : details.error},{status:418});
+    }
 
     // Convert extracted HTML content to Markdown
     const turndownService = new TurndownService();
