@@ -17,7 +17,7 @@ interface CodeContextType {
   code: string;
   setCode: (code: string) => void;
   boilerplates: Record<string, string>;
-  setBoilerplates: React.Dispatch<React.SetStateAction<{ cpp: string; java: string; javascript: string; python: string; }>>;
+  setBoilerplates: React.Dispatch<React.SetStateAction<{ "cpp": string; "java": string; "javascript": string; "python": string; }>>;
 }
 
 const languages: Language[] = [
@@ -32,10 +32,10 @@ const CodeContext = createContext<CodeContextType | undefined>(undefined);
 export function CodeProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState("javascript");
   const [boilerplates, setBoilerplates] = useState({
-    cpp: "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hello, World!\";\n  return 0;\n}",
-    java: "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"Hello, World!\");\n  }\n}",
-    javascript: "console.log(\"Hello, World!\");",
-    python: "print(\"Hello, World!\")",
+    "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hello, World!\";\n  return 0;\n}",
+    "java": "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"Hello, World!\");\n  }\n}",
+    "javascript": "console.log(\"Hello, World!\");",
+    "python": "print(\"Hello, World!\")",
   });
   const [languageId,setLanguageId] = useState("102");
   const [code,setCode] = useState(boilerplates["javascript"]);

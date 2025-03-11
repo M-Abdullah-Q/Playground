@@ -26,6 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 
     const url = `https://codeforces.com/problemset/problem/${id.slice(0, -1)}/${id.slice(-1).toUpperCase()}`;
+    const contestUrl = `https://codeforces.com/contest/${id.slice(0, -1)}/problem/${id.slice(-1).toUpperCase()}`
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 

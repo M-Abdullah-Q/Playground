@@ -19,7 +19,7 @@ const ProblemStatement = () =>  {
                 setTitle(data.title);
                 setDescription(data.description);
                 setTimeLimit(data.timeLimit);
-                setMemoryLimit(data.memeoryLimit);
+                setMemoryLimit(data.memoryLimit);
                 setTests(data.tests);
 
             }

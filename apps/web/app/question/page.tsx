@@ -8,6 +8,7 @@ import LanguageSelector from '@/components/LanguageSelector'
 import { CodeProvider } from '@/providers/CodeProvider'
 import { QuestionProvider } from '@/providers/QuestionProvider'
 import ProblemStatement from '@/components/ProblemStatement'
+import { ResultProvider } from '@/providers/ResultProvider'
 
 export default function Home() {
 
@@ -16,6 +17,7 @@ export default function Home() {
       <Header></Header>
       <CodeProvider>
         <QuestionProvider>
+          <ResultProvider>
           <RunButton />
           <div className="container mx-auto px-4 py-2 grid grid-cols-2 gap-6 h-[calc(100vh-73px)]">
             <ProblemStatement></ProblemStatement>
@@ -35,6 +37,7 @@ export default function Home() {
               <IOspace></IOspace>
             </div>
           </div>
+          </ResultProvider>
         </QuestionProvider>
       </CodeProvider>
     </div>

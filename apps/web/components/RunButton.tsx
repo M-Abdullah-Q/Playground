@@ -2,17 +2,54 @@
 import { Button } from '../components/ui/button'
 import { Play } from 'lucide-react'
 import { useCodeContext } from '../providers/CodeProvider'
+import { useQuestionContext } from '@/providers/QuestionProvider'
+import axios from 'axios'
+import { useResultContext } from '@/providers/ResultProvider'
 
 const RunButton = () => {
 
-  const {languages, language, code, languageId} = useCodeContext();
+  const {code, languageId} = useCodeContext();
+  const {tests, timeLimit, memoryLimit} = useQuestionContext();
+  const {loading,setLoading,setResult, setTokens} = useResultContext();
 
-  const handleRun = () => {
-    console.log(code);
-    console.log(languageId);
+  const handleRun = async () => {
+    // console.log(code);
+    // console.log(languageId);
+    // console.log(tests);
+    // console.log(parseFloat(timeLimit.split(" ")[0]));
+    // console.log(parseInt(memoryLimit.split(" ")[0])*1000);
+
+    //it should send a request to the server with the given inputs and  get the tokens
+    //then populate the tokenContext
+    //the token context will then be used in the IOspace
+    
+    const res = await axios.post('/api/submission',{
+      code,
+      languageId,
+      tests,
+      timeLimit,
+      memoryLimit
+    });
+    setTokens(res.data.tokenString);
+    setLoading(true);
+
+    // const tokenString = response.data.map(obj => obj.token).join(',');
+
+    // const getResponse = await axios.get('/api/submission', {
+    //   params: {
+    //     tokenString
+    //   }
+    // });
+    
+
+    // const res = getResponse.data
+    // const data = await response.data
+    // const tokens = data.map((c: any) => c.token)
+    // setTokens(tokens);
   }
 
-    return (
+
+  return (
         <div className="container mx-auto px-4 py-2 flex justify-center">
         <Button
           onClick={handleRun}
