@@ -8,15 +8,11 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const tokenString = searchParams.get("tokens");
 
-    console.log(tokenString);
-
     if (!tokenString) {
         return new Response(`data: ${JSON.stringify({ error: "Missing tokenString parameter" })}\n\n`, {
             headers: { "Content-Type": "text/event-stream" },
         });
     }
-
-    console.log("Processing tokenString:", tokenString);
 
     const stream = new ReadableStream({
         async start(controller) {
@@ -61,7 +57,7 @@ export async function GET(req: NextRequest) {
                     if (pendingSubmissions.length === 0) {
                         res = {
                             statuses: submissionStatuses,
-                            stdout: response.data.map((sub: any) => atob(sub.stdout))
+                            stdout: response.data.submissions.map((sub: any) => atob(sub.stdout))
                         };
                         statusFlag = true;
                     } else {

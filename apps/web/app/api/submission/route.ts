@@ -15,15 +15,18 @@ export async function POST(req: NextRequest){
         return NextResponse.json({message : "bad request"}, {status: 500})
     }
 
-    const code = body.code;
-    const languageId = body.languageId;
-    const timeLimit = parseFloat(body.timeLimit.split(" ")[0]);
-    const memoryLimit = parseInt(body.memoryLimit.split(" ")[0])*1000;
-    let tests = body.tests;
+    let {code, languageId, timeLimit, memoryLimit, tests} = body;
+
+    // const code = body.code;
+    // const languageId = body.languageId;
+    timeLimit = parseFloat(body.timeLimit.split(" ")[0]);
+    memoryLimit = parseInt(body.memoryLimit.split(" ")[0])*1000;
     tests = tests.map((test: TestType) => ({
         ...test,
         output: test.output.toLowerCase(),
     }));
+
+    console.log(`${code}`);
     
 
     const submissions = tests.map((test: TestType,index: number) => {

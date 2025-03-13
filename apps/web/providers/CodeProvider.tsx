@@ -14,10 +14,12 @@ interface CodeContextType {
   setLanguage: (lang: string) => void;
   languageId: string;
   setLanguageId: (langCode: string) => void;
-  code: string;
-  setCode: (code: string) => void;
-  boilerplates: Record<string, string>;
-  setBoilerplates: React.Dispatch<React.SetStateAction<{ "cpp": string; "java": string; "javascript": string; "python": string; }>>;
+  code: string | null;
+  setCode: (code: string | null) => void;
+  boilerplates: Record<string, string> | null;
+  setBoilerplates: (boilerplates: Record<string,string> | null) => void;
+  functions: Record<string, string> | null;
+  setFunctions: (functions: Record<string,string> | null) => void
 }
 
 const languages: Language[] = [
@@ -31,18 +33,14 @@ const CodeContext = createContext<CodeContextType | undefined>(undefined);
 
 export function CodeProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState("javascript");
-  const [boilerplates, setBoilerplates] = useState({
-    "cpp": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hello, World!\";\n  return 0;\n}",
-    "java": "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"Hello, World!\");\n  }\n}",
-    "javascript": "console.log(\"Hello, World!\");",
-    "python": "print(\"Hello, World!\")",
-  });
+  const [boilerplates, setBoilerplates] = useState<Record<string,string> | null>(null);
   const [languageId,setLanguageId] = useState("102");
-  const [code,setCode] = useState(boilerplates["javascript"]);
+  const [code,setCode] = useState<string | null>(null);
+  const [functions, setFunctions] = useState<Record<string,string> | null>(null);
 
   return (
     <CodeContext.Provider
-      value={{ languages, language, setLanguage, languageId, setLanguageId, boilerplates, code, setCode, setBoilerplates}}
+      value={{ languages, language, setLanguage, languageId, setLanguageId, boilerplates, code, setCode, setBoilerplates, functions, setFunctions}}
     >
       {children}
     </CodeContext.Provider>
