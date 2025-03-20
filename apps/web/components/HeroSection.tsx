@@ -2,38 +2,39 @@
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ArrowRight, Brain, Code, Trophy } from "lucide-react"
+import { ArrowRight, Trophy, Zap, ArrowBigUpDash, Users } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { QuestionInput } from "./QuestionInput"
 
 const features = [
   {
-    icon: <Code className="h-6 w-6" />,
-    title: "300+ DSA Problems",
-    description: "Carefully curated problems covering all important algorithms and data structures"
+    icon: <Zap className="h-6 w-6" />,
+    title: "Blazing-Fast Execution",
+    description: "Lightning-fast code execution for seamless problem-solving and instant feedback."
   },
   {
-    icon: <Brain className="h-6 w-6" />,
-    title: "Smart Learning Path",
-    description: "Personalized learning path based on your skill level and progress"
+    icon: <ArrowBigUpDash className="h-6 w-6" />,
+    title: "Boost Your Rating",
+    description: "Accelerate your progress with better contest performance"
   },
   {
-    icon: <Trophy className="h-6 w-6" />,
-    title: "Contest Practice",
-    description: "Regular contests and mock interviews to prepare you for real competitions"
+    icon: <Users className="h-6 w-6" />,
+    title: "Community Support",
+    description: "Sharpen your skills with regular contests, mock interviews, and real-world challenges. Coming Soon..."
   }
-]
+];
+
 
 export function HeroSection() {
   return (
     <div className="py-20 px-4">
       <div className="container mx-auto text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          Master DSA & Competitive Programming
+          Competitive Programming made easier
         </h1>
         <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-          One stop solution for all your algorithmic programming needs. Practice, learn, and compete with the best.
+          Code faster, rank higher—accelerate your algorithmic journey!
         </p>
         <QuestionInput />
         <div className="grid md:grid-cols-3 gap-8 mt-20">

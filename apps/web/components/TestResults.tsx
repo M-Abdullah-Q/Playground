@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Card } from "../components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { Skeleton } from "./ui/skeleton";
 import { useResultContext } from "@/providers/ResultProvider";
 import axios from "axios";
 
@@ -14,14 +15,14 @@ interface Test{
 
 const TestResult = ({tests}: {tests: Test[]}) => {
 
-  const {result,setResult,loading,setLoading,results, setResults, tokens,setTokens} = useResultContext();
+  const {result,setResult,exec,setExec,results, setResults, tokens,setTokens} = useResultContext();
 
   // const [results,setResults] = useState<number[] | null>(null);
   // const memoizedResults = useMemo(() => results, [results]);
 
   useEffect(() => {
     async function sse(){
-    if(!loading) return;
+    if(!exec) return;
 
     const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_BASE_URL}/api/result?tokens=${tokens}`);
 
@@ -30,13 +31,13 @@ const TestResult = ({tests}: {tests: Test[]}) => {
       console.log(data);
       setResults(data);
       setResult(true);
-      setLoading(false);
+      setExec(false);
       eventSource.close();
       console.log('closed eventsource');
     };
 
     eventSource.onerror = () => {
-      setLoading(false);
+      setExec(false);
       eventSource.close();
     };
 
@@ -101,9 +102,11 @@ const TestResult = ({tests}: {tests: Test[]}) => {
           ))}
         </div>
       </Tabs> : 
-        loading ? 
-          <div>Skeleton</div> : 
-          <Card>Empty</Card>
+        exec ? 
+          <div>
+            <Skeleton className="h-[200px] w-auto rounded-xl" />
+          </div> : 
+          <div className="flex justify-center items-center h-full min-h-[300px]">No Test Results to be displayed</div>
       }
     </div>
   )

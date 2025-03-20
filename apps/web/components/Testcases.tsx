@@ -1,6 +1,7 @@
 "use client";
 import { Card } from "../components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { Skeleton } from "./ui/skeleton";
 
 interface Test{
   input: string,
@@ -46,7 +47,6 @@ const Testcases = ({tests}:{tests: Test[]}) => {
                   readOnly
                   value={test.output}
                 >
-                  {/* {test.output} */}
                 </textarea>
               </div>
             </TabsContent>

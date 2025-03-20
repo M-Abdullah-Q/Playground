@@ -42,7 +42,7 @@ export default function LanguageSelector({ className }: { className?: string }) 
 
     setLanguage(selectedLang.value);
     setLanguageId(selectedLang.id);
-    // setCode(boilerplates[selectedLang.value]); // Update code editor with the correct boilerplate
+    // setCode(boilerplates[selectedLang.value]);
     setIsOpen(false);
     setSearchQuery("");
   };

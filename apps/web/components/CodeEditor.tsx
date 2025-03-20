@@ -19,8 +19,8 @@ const CodeEditor = () => {
 
   useEffect(() => {
 
-    console.log("Boilerplates in CodeEditor:", boilerplates);
-    console.log("Functions in CodeEditor:", functions);
+    // console.log("Boilerplates in CodeEditor:", boilerplates);
+    // console.log("Functions in CodeEditor:", functions);
 
 
     //use the input and output description to send an api request on mount only

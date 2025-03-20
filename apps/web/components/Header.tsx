@@ -11,11 +11,11 @@ const Header = () => {
           <div className="flex items-center gap-2">
             <Code2 className="h-6 w-6" />
             {/* <h1 className="text-2xl font-bold">Playground</h1> */}
-            <Link href="/" className="text-2xl font-bold">Playground</Link>
+            <Link href="/" className="text-2xl font-bold">Coden</Link>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="outline">Sign Up</Button>
-            <Button>Login</Button>
+            {/* <Button variant="outline">Sign Up</Button> */}
+            {/* <Button>Login</Button> */}
             <ThemeToggle />
             <Button variant="ghost" size="icon">
               <Settings className="h-5 w-5" />

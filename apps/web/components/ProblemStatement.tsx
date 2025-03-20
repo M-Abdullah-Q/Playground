@@ -2,13 +2,29 @@
 import { Card } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
 import { useQuestionContext } from "@/providers/QuestionProvider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useCodeContext } from "@/providers/CodeProvider";
+import { MultiStepLoader as Loader } from "./ui/multi-step-loader";
 
 const ProblemStatement = () => {
     const searchParams = useSearchParams();
     const qId = searchParams.get("q");
+
+    const [loading,setLoading] = useState<boolean>(true);
+
+    const loadingStates = [
+        {
+            text: "Retrieving problem statement..."
+        },
+        {
+            text: "Loading test cases..."
+        },
+        {
+            text: "Generating boilerplate code..."
+        }
+    ];
+    
 
     const {
         title,
@@ -24,7 +40,7 @@ const ProblemStatement = () => {
         setTests,
     } = useQuestionContext();
 
-    const { boilerplates, setBoilerplates, functions, setFunctions } = useCodeContext();
+    const { boilerplates, setBoilerplates, functions, setFunctions, setFullBoilerplates } = useCodeContext();
 
     useEffect(() => {
         if (!qId) return;
@@ -41,6 +57,7 @@ const ProblemStatement = () => {
                 setTests(data.tests);
                 setInputDescription(data.inputDescription);
                 setOutputDescription(data.outputDescription);
+                setLoading(false);
 
                 getBoiler(data.title, data.inputDescription, data.outputDescription);
                 
@@ -59,11 +76,12 @@ const ProblemStatement = () => {
                     outputDescription: outputDesc,
                 });
 
-                const { boilers, funcs } = res.data;
+                const { boilers, fullBoilers, funcs } = res.data;
                 setBoilerplates(boilers);
                 setFunctions(funcs);
-                console.log("Updated Boilerplates:", boilerplates);
-                console.log("Updated Functions:", functions);
+                setFullBoilerplates(fullBoilers);
+                // console.log("Updated Boilerplates:", boilerplates);
+                // console.log("Updated Functions:", functions);
                 
             } catch (error) {
                 console.error("Error getting from generator:", error);
@@ -74,10 +92,13 @@ const ProblemStatement = () => {
     }, []);
 
     return (
-        <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">{title}</h2>
-            <div className="prose dark:prose-invert">
-                <div dangerouslySetInnerHTML={{ __html: description }} />
+        <Card>
+            <Loader loading={loading} loadingStates={loadingStates} loop={false}></Loader>
+            <div className="p-6">
+                <h2 className="text-xl font-semibold mb-4">{title}</h2>
+                <div className="prose dark:prose-invert">
+                    <div dangerouslySetInnerHTML={{ __html: description }} />
+                </div>
             </div>
         </Card>
     );

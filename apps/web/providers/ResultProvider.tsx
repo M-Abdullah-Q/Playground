@@ -4,8 +4,8 @@ import { createContext, ReactNode, useState, useContext } from "react";
 interface ResultContextType  {
     result: boolean;
     setResult: (result : boolean) => void;
-    loading: boolean;
-    setLoading: (loading: boolean) => void;
+    exec: boolean;
+    setExec: (loading: boolean) => void;
     results: ResultsType | null;
     setResults: (results: ResultsType | null) => void
     tokens: string | null;
@@ -27,13 +27,13 @@ const ResultContext = createContext<ResultContextType | undefined>(undefined);
 
 export function ResultProvider({children}: {children : ReactNode}){
     const [result,setResult] = useState<boolean>(false);
-    const [loading,setLoading] = useState<boolean>(false);
+    const [exec,setExec] = useState<boolean>(false);
     const [results,setResults] = useState<ResultsType | null>(null);
     const [tokens, setTokens] = useState<string | null>(null);
 
     return (
         <ResultContext.Provider
-            value={{result,setResult, loading, setLoading, results, setResults, tokens, setTokens}}
+            value={{result,setResult, exec, setExec, results, setResults, tokens, setTokens}}
         >
             {children}
         </ResultContext.Provider>

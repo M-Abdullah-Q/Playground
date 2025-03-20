@@ -8,9 +8,9 @@ import { useResultContext } from '@/providers/ResultProvider'
 
 const RunButton = () => {
 
-  const {code, languageId} = useCodeContext();
+  const {code, languageId, boilerplates, language, fullBoilerplates} = useCodeContext();
   const {tests, timeLimit, memoryLimit} = useQuestionContext();
-  const {loading,setLoading,setResult, setTokens} = useResultContext();
+  const {exec,setExec,setResult, setTokens} = useResultContext();
 
   const handleRun = async () => {
     // console.log(code);
@@ -23,6 +23,10 @@ const RunButton = () => {
     //then populate the tokenContext
     //the token context will then be used in the IOspace
     
+    // console.log(code);
+    // console.log( boilerplates[language].replace('###USER CODE HERE###', code));
+    // console.log( fullBoilerplates[language].replace('###USER CODE HERE###', code));
+    // const runCode = boilerplates?.language.replace('###USER CODE HERE###', code); 
     const res = await axios.post('/api/submission',{
       code,
       languageId,
@@ -31,7 +35,7 @@ const RunButton = () => {
       memoryLimit
     });
     setTokens(res.data.tokenString);
-    setLoading(true);
+    setExec(true);
 
     // const tokenString = response.data.map(obj => obj.token).join(',');
 
