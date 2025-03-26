@@ -111,7 +111,7 @@ export default function LanguageSelector({ className }: { className?: string }) 
                   onClick={() => handleSelect(lang.value)}
                   className={cn(
                     "flex items-center w-full px-3 py-2 text-sm",
-                    "hover:bg-gray-100 dark:hover:bg-gray-800",
+                    "hover:bg-gray-100 dark:hover:bg-gray-900",
                     "transition-colors duration-150",
                     language === lang.value && "bg-gray-100 dark:bg-gray-800"
                   )}

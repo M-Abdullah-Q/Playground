@@ -26,9 +26,17 @@ const RunButton = () => {
     // console.log(code);
     // console.log( boilerplates[language].replace('###USER CODE HERE###', code));
     // console.log( fullBoilerplates[language].replace('###USER CODE HERE###', code));
-    // const runCode = boilerplates?.language.replace('###USER CODE HERE###', code); 
+    // const runCode = boilerplates?.language.replace('###USER CODE HERE###', code);
+    
+    const subCode = (boilerplates?.[language] || "").replace("##USER_CODE_HERE##", code || "");
+    // console.log(subCode);
+    // console.log(languageId);
+    // console.log(tests);
+    // console.log(timeLimit);
+    // console.log(memoryLimit);
+    
     const res = await axios.post('/api/submission',{
-      code,
+      subCode,
       languageId,
       tests,
       timeLimit,

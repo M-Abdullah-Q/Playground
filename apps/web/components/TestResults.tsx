@@ -22,29 +22,30 @@ const TestResult = ({tests}: {tests: Test[]}) => {
 
   useEffect(() => {
     async function sse(){
-    if(!exec) return;
+      if(!exec) return;
 
-    const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_BASE_URL}/api/result?tokens=${tokens}`);
+      const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_BASE_URL}/api/result?tokens=${tokens}`);
 
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log(data);
-      setResults(data);
-      setResult(true);
-      setExec(false);
-      eventSource.close();
-      console.log('closed eventsource');
-    };
+      eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        // console.log(data);
+        setResults(data);
+        setResult(true);
+        setExec(false);
+        eventSource.close();
+        // console.log('closed eventsource');
+      };
 
-    eventSource.onerror = () => {
-      setExec(false);
-      eventSource.close();
-    };
+      eventSource.onerror = () => {
+        setExec(false);
+        eventSource.close();
+      };
 
-    return () => {
-      eventSource.close();
-    };
+      return () => {
+        eventSource.close();
+      };
     }
+
     sse();
   }, [tokens]);
 

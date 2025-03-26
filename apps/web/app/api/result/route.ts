@@ -60,6 +60,7 @@ export async function GET(req: NextRequest) {
                             stdout: response.data.submissions.map((sub: any) => atob(sub.stdout))
                         };
                         statusFlag = true;
+                        // console.log(response.data);
                     } else {
                         await new Promise((resolve) => setTimeout(resolve, 2000));
                     }
