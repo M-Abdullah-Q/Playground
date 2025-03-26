@@ -1,30 +1,29 @@
 "use client";
 import { Card } from "@/components/ui/card";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useQuestionContext } from "@/providers/QuestionProvider";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useCodeContext } from "@/providers/CodeProvider";
 import { MultiStepLoader as Loader } from "./ui/multi-step-loader";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { NextApiResponse } from "next";
 
 const ProblemStatement = () => {
     const searchParams = useSearchParams();
     const qId = searchParams.get("q");
+    const ongoing = searchParams.get("ongoing");
+    const router = useRouter();
 
-    const [loading,setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [showModal, setShowModal] = useState<boolean>(false);
 
     const loadingStates = [
-        {
-            text: "Retrieving problem statement..."
-        },
-        {
-            text: "Loading test cases..."
-        },
-        {
-            text: "Generating boilerplate code..."
-        }
+        { text: "Retrieving problem statement..." },
+        { text: "Loading test cases..." },
+        { text: "Generating boilerplate code..." }
     ];
-    
 
     const {
         title,
@@ -47,7 +46,7 @@ const ProblemStatement = () => {
 
         async function loadQuestion() {
             try {
-                const res = await axios.get(`/api/scrape/${qId}`);
+                const res = await axios.get(`/api/scrape/${qId}?ongoing=${ongoing}`);
                 const data = res.data;
 
                 setTitle(data.title);
@@ -60,9 +59,13 @@ const ProblemStatement = () => {
                 setLoading(false);
 
                 getBoiler(data.title, data.inputDescription, data.outputDescription);
-                
-            } catch (error) {
-                console.error("Error fetching question:", error);
+            } catch (error: any) {
+                if (error.response && error.response.status !== 200) {
+                    setLoading(false);
+                    setShowModal(true);
+                } else {
+                    console.error("Error fetching question:", error);
+                }
             }
         }
 
@@ -80,9 +83,6 @@ const ProblemStatement = () => {
                 setBoilerplates(boilers);
                 setFunctions(funcs);
                 setFullBoilerplates(fullBoilers);
-                // console.log("Updated Boilerplates:", boilerplates);
-                // console.log("Updated Functions:", functions);
-                
             } catch (error) {
                 console.error("Error getting from generator:", error);
             }
@@ -92,15 +92,28 @@ const ProblemStatement = () => {
     }, []);
 
     return (
-        <Card>
-            <Loader loading={loading} loadingStates={loadingStates} loop={false}></Loader>
-            <div className="p-6">
-                <h2 className="text-xl font-semibold mb-4">{title}</h2>
-                <div className="prose dark:prose-invert">
-                    <div dangerouslySetInnerHTML={{ __html: description }} />
+        <>
+            <Card>
+                <Loader loading={loading} loadingStates={loadingStates} loop={false}></Loader>
+                <div className="p-6">
+                    <h2 className="text-xl font-semibold mb-4">{title}</h2>
+                    <div className="prose dark:prose-invert">
+                        <div dangerouslySetInnerHTML={{ __html: description }} />
+                    </div>
                 </div>
-            </div>
-        </Card>
+            </Card>
+
+            {/* Modal for unsupported question */}
+            <Dialog open={showModal} onOpenChange={setShowModal}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Uh Oh</DialogTitle>
+                    </DialogHeader>
+                    <p>The requested question is not supported or unavailable . Please try again.</p>
+                    <Button onClick={() => router.push("/")}>Go to Home</Button>
+                </DialogContent>
+            </Dialog>
+        </>
     );
 };
 

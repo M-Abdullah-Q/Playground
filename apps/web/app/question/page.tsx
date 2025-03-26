@@ -11,6 +11,7 @@ import ProblemStatement from '@/components/ProblemStatement'
 import { ResultProvider } from '@/providers/ResultProvider'
 import CodenProvider from '@/providers/CodenProvider'
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable'
+import FloatingDock from '@/components/FloatingDock'
 
 export default function Home() {
 
@@ -38,6 +39,7 @@ export default function Home() {
             <IOspace></IOspace>
           </div>
         </div>
+        <FloatingDock></FloatingDock>
       </CodenProvider>
     </div>
   )

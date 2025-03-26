@@ -18,15 +18,16 @@ interface DetailsType {
   tests: TestType[];
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string, ongoing: boolean } }) {
   try {
-    const { id } = params;
+    const { id, ongoing } = params;
     if (!id) {
       return NextResponse.json({ error: "Question not found" }, { status: 400 });
     }
 
-    const url = `https://codeforces.com/problemset/problem/${id.slice(0, -1)}/${id.slice(-1).toUpperCase()}`;
-    const contestUrl = `https://codeforces.com/contest/${id.slice(0, -1)}/problem/${id.slice(-1).toUpperCase()}`
+    const probSeturl = `https://codeforces.com/problemset/problem/${id.slice(0, -1)}/${id.slice(-1).toUpperCase()}`;
+    const contestUrl = `https://codeforces.com/contest/${id.slice(0, -1)}/problem/${id.slice(-1).toUpperCase()}`;
+    const url = ongoing ? contestUrl : probSeturl;
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
@@ -135,7 +136,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     await browser.close();
 
     if(details.error){
-        return NextResponse.json({error : details.error},{status:418});
+        return NextResponse.json({error : details.error},{status:404});
     }
 
     // Convert extracted HTML content to Markdown
