@@ -12,6 +12,8 @@ import { ResultProvider } from '@/providers/ResultProvider'
 import CodenProvider from '@/providers/CodenProvider'
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable'
 import FloatingDock from '@/components/FloatingDock'
+import CopyButton from "@/components/CopyButton";
+
 
 export default function Home() {
 
@@ -28,8 +30,9 @@ export default function Home() {
             <Card className="p-4 flex-1">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold mb-4">Code Editor</h2>
-                <div className='py-2 items-center'>
+                <div className='flex gap-2 py-2 items-center'>
                   <LanguageSelector className="mx-auto" />
+                  <CopyButton />
                 </div>
               </div>
               <div className="">

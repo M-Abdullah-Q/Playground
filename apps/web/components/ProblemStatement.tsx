@@ -8,7 +8,6 @@ import { useCodeContext } from "@/providers/CodeProvider";
 import { MultiStepLoader as Loader } from "./ui/multi-step-loader";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { NextApiResponse } from "next";
 
 const ProblemStatement = () => {
     const searchParams = useSearchParams();
@@ -58,7 +57,7 @@ const ProblemStatement = () => {
                 setOutputDescription(data.outputDescription);
                 setLoading(false);
 
-                getBoiler(data.title, data.inputDescription, data.outputDescription);
+                // getBoiler(data.title, data.inputDescription, data.outputDescription);
             } catch (error: any) {
                 if (error.response && error.response.status !== 200) {
                     setLoading(false);

@@ -21,7 +21,11 @@ interface CodeContextType {
   fullBoilerplates:  Record<string,string> | null;
   setFullBoilerplates: (fullBoilerplates: Record<string, string> | null) => void;
   functions: Record<string, string> | null;
-  setFunctions: (functions: Record<string,string> | null) => void
+  setFunctions: (functions: Record<string,string> | null) => void;
+  isDefault: boolean;
+  setIsDefault: (isDefault: boolean) => void;
+  defaultCode: Record<string, string>;
+  setDefaultCode: (defaultCode : Record<string, string>) => void;
 }
 
 const languages: Language[] = [
@@ -40,10 +44,38 @@ export function CodeProvider({ children }: { children: ReactNode }) {
   const [languageId,setLanguageId] = useState("102");
   const [code,setCode] = useState<string | null>(null);
   const [functions, setFunctions] = useState<Record<string,string> | null>(null);
+  const [defaultCode, setDefaultCode] = useState<Record<string, string>>({
+    "cpp": `#include <iostream>
+  
+  int main() {
+      std::cout << "Hello, World!" << std::endl;
+      return 0;
+  }`,
+  
+    "java": `public class Main {
+      public static void main(String[] args) {
+          System.out.println("Hello, World!");
+      }
+  }`,
+  
+    "javascript": `function main() {
+      console.log("Hello, World!");
+  }
+  
+  main();`,
+  
+    "python": `def main():
+      print("Hello, World!")
+  
+  if __name__ == "__main__":
+      main()`
+  });
+  
+  const [isDefault, setIsDefault] = useState<boolean>(true);
 
   return (
     <CodeContext.Provider
-      value={{ languages, language, setLanguage, languageId, setLanguageId, boilerplates, code, setCode, setBoilerplates, functions, setFunctions, fullBoilerplates, setFullBoilerplates}}
+      value={{ languages, language, setLanguage, languageId, setLanguageId, boilerplates, code, setCode, setBoilerplates, functions, setFunctions, fullBoilerplates, setFullBoilerplates, defaultCode, setDefaultCode, isDefault, setIsDefault}}
     >
       {children}
     </CodeContext.Provider>
