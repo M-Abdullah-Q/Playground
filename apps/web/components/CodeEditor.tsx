@@ -53,7 +53,7 @@ const CodeEditor = () => {
       }
     }
 
-    if (!isDefault) {
+    if (!isDefault && !functions) {
       getBoiler(title, inputDescription, outputDescription);
       console.log("switched to ai");
     }
