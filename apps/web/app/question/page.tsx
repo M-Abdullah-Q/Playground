@@ -11,6 +11,7 @@ import ProblemStatement from '@/components/ProblemStatement'
 import { ResultProvider } from '@/providers/ResultProvider'
 import CodenProvider from '@/providers/CodenProvider'
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable'
+import { Toaster } from "@/components/ui/toaster"
 import FloatingDock from '@/components/FloatingDock'
 import CopyButton from "@/components/CopyButton";
 
@@ -44,6 +45,7 @@ export default function Home() {
         </div>
         <FloatingDock></FloatingDock>
       </CodenProvider>
+      <Toaster />
     </div>
   )
 }

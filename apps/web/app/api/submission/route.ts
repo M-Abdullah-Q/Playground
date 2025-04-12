@@ -1,5 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { Ratelimit } from "@upstash/ratelimit";
+import { kv } from "@vercel/kv";
+
+const rateLimit = new Ratelimit({
+    redis : kv,
+    limiter : Ratelimit.slidingWindow(5, '60s')
+})
+
+export const config = {
+    runtime : 'edge'
+}
 
 
 interface TestType {
@@ -14,6 +25,15 @@ export async function POST(req: NextRequest){
     if(!body){
         return NextResponse.json({message : "bad request"}, {status: 500})
     }
+
+    //add rate limiting
+    const ip = req.ip ?? '127.0.0.1';
+    const { success } = await rateLimit.limit(ip);
+
+    if(!success){
+        return NextResponse.json('Too many requests',{status:429});
+    }
+
 
     let {subCode, languageId, timeLimit, memoryLimit, tests} = body;
 
@@ -56,66 +76,6 @@ export async function POST(req: NextRequest){
             submissions
         }
     }
-
-    // const {readable,writable} = new TransformStream();
-    // const writer = writable.getWriter();
-
-    // (async() => {
-    //     try{
-    //         const submitTokens = await axios.request(postOptions);
-    //         const tokens = submitTokens.data;
-    //         const tokenString = tokens.map((obj: any) => obj.token).join(',');
-
-    //         const getOptions = {
-    //             method: 'GET',
-    //             url: process.env.JUDGE0_BATCHED_URL,
-    //             params: {
-    //               tokens: tokenString,
-    //               base64_encoded: 'true',
-    //               fields: '*'
-    //             },
-    //             headers: {
-    //               'x-rapidapi-key': process.env.X_RAPID_API_KEY,
-    //               'x-rapidapi-host': process.env.X_RAPID_API_HOST
-    //             }
-    //         };
-
-    //         let res ;
-    //         let statusFlag = false;
-    //         while(!statusFlag){
-    //             const response = await axios.request(getOptions);
-    //             const submissionStatuses = response.data.submissions.map((sub: any) => parseInt(sub.status_id));
-    //             const pendingSubmissions = submissionStatuses.filter((sub: any) => {
-    //                 return sub<=2;
-    //             });
-
-    //             if(pendingSubmissions.length==0){
-    //                 res = [3,4,3,3]
-    //                 statusFlag = !statusFlag;
-    //             }
-    //             else{
-    //                 await new Promise((resolve) => setTimeout(resolve, 2000));
-    //             }
-
-    //         }
-
-    //         await writer.write(new TextEncoder().encode(`data: ${res}\n\n`));
-    //         await writer.close();
-    //     }
-    //     catch(error){
-    //         console.error(error);
-    //         await writer.write(new TextEncoder().encode(`data: ${error}\n\n`));
-    //         await writer.close();
-    //     }
-    // })();
-
-    // return new Response(stream, {
-    //     headers: {
-    //         Connection: "keep-alive",
-    //         "Content-Type": "text/event-stream",
-    //         "Cache-Control": "no-cache",
-    //     },
-    // });
 
     try {
         const submitTokens = await axios.request(postOptions);

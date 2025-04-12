@@ -5,12 +5,14 @@ import { useCodeContext } from '../providers/CodeProvider'
 import { useQuestionContext } from '@/providers/QuestionProvider'
 import axios from 'axios'
 import { useResultContext } from '@/providers/ResultProvider'
+import { useToast } from '@/hooks/use-toast'
 
 const RunButton = () => {
 
   const {code, languageId, boilerplates, language, fullBoilerplates} = useCodeContext();
   const {tests, timeLimit, memoryLimit} = useQuestionContext();
   const {exec,setExec,setResult, setTokens} = useResultContext();
+  const { toast } = useToast();
 
   const handleRun = async () => {
     // console.log(code);
@@ -42,6 +44,20 @@ const RunButton = () => {
       timeLimit,
       memoryLimit
     });
+    if(res.status!=200){
+      if(res.status==429){
+        toast({
+          title : "Uh Oh! Too many requests",
+          description : "Please try again after some time" 
+        })
+      }
+
+      toast({
+        title : "Uh oh! Something went wrong",
+        description : "There was a problem with your request"
+      })
+      return;
+    }
     setTokens(res.data.tokenString);
     setExec(true);
 
