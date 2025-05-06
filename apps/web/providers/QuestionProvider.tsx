@@ -7,6 +7,11 @@ interface TestType {
   output: string;
 }
 
+interface HintType {
+  level : number;
+  hint : string
+}
+
 interface QuestionContextType {
   title: string| null;
   setTitle: (title: string| null) => void;
@@ -17,10 +22,14 @@ interface QuestionContextType {
   memoryLimit : string;
   setMemoryLimit : (memeoryLimit : string) => void;
   example: string;
+  ongoing: boolean;
+  setOngoing : (ongoing: boolean) => void;
   inputDescription: string | null;
   setInputDescription : (ipd : string | null) => void;
   outputDescription: string | null;
   setOutputDescription: (opd: string | null) => void;
+  hints : HintType[] | null,
+  setHints : (hints : HintType[] | null) => void;
   setExample: (example: string) => void;
   tests: TestType[];
   setTests: (test: TestType[]) => void;
@@ -37,11 +46,13 @@ export function QuestionProvider({ children }: { children: ReactNode }) {
   const [example, setExample] = useState("");
   const [tests, setTests] = useState<TestType[]>([]);
   const [inputDescription,setInputDescription] = useState<string | null>(null);
-  const [outputDescription,setOutputDescription] = useState<string | null>(null)
+  const [outputDescription,setOutputDescription] = useState<string | null>(null);
+  const [hints, setHints] = useState<HintType[] | null>(null);
+  const [ongoing,setOngoing] = useState<boolean>(false);
   
   return (
     <QuestionContext.Provider
-      value={{ title, setTitle, description, setDescription, timeLimit, setTimeLimit, memoryLimit, setMemoryLimit,inputDescription, setInputDescription, outputDescription, setOutputDescription, example, setExample, tests, setTests }}
+      value={{ title, setTitle, description, setDescription, timeLimit, setTimeLimit, memoryLimit, setMemoryLimit,inputDescription, setInputDescription, outputDescription, setOutputDescription, example, setExample, tests, setTests, ongoing, setOngoing, hints, setHints }}
     >
       {children}
     </QuestionContext.Provider>

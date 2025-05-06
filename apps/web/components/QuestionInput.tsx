@@ -16,7 +16,7 @@ export function QuestionInput() {
     e.preventDefault()
     if (question.trim()) {
       setTimeout(() => {
-        router.push(`/question?q=${encodeURIComponent(question)}&ongoing=${ongoing}`)
+        router.push(`/question?q=${encodeURIComponent(question)}&ongoing=${encodeURIComponent(ongoing)}`)
       }, 300)
     }
   }
@@ -34,7 +34,7 @@ export function QuestionInput() {
         <input 
           type="checkbox" 
           checked={ongoing} 
-          onChange={(e) => setOngoing(e.target.checked)} 
+          onChange={(e) => setOngoing(!ongoing)} 
           className="form-checkbox h-5 w-5 text-blue-600"
         />
         <div className="opacity-100 text-muted-foreground">Ongoing Contest?</div>

@@ -13,8 +13,9 @@ interface ResultContextType  {
 };
 
 interface ResultsType {
-    stdout: string | null,
-    statuses: number[] | null
+    stdout: string[] | null,
+    statuses: number[] | null,
+    stderr : string[] | null
 }
 
 const ResultContext = createContext<ResultContextType | undefined>(undefined);

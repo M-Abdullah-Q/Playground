@@ -3,13 +3,21 @@ import axios from "axios";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-const rateLimit = new Ratelimit({
+const ratelimit = new Ratelimit({
     redis : Redis.fromEnv(),
-    limiter : Ratelimit.slidingWindow(5, '60s')
+    limiter : Ratelimit.slidingWindow(5, '60s') 
 })
 
 export const config = {
     runtime : 'edge'
+}
+
+function getClientIp(req: NextRequest): string {
+    const forwardedFor = req.headers.get('x-forwarded-for');
+    if (forwardedFor) {
+      return forwardedFor.split(',')[0].trim();
+    }
+    return '127.0.0.1';
 }
 
 
@@ -26,14 +34,12 @@ export async function POST(req: NextRequest){
         return NextResponse.json({message : "bad request"}, {status: 500})
     }
 
-    //add rate limiting
-    const ip = req.ip ?? '127.0.0.1';
-    const { success } = await rateLimit.limit(ip);
+    const ip = getClientIp(req) ?? '127.0.0.1'
+    const { success } = await ratelimit.limit(ip);
 
     if(!success){
-        return NextResponse.json('Too many requests',{status:429});
+        return NextResponse.json('Too many requests', {status:429})
     }
-
 
     let {subCode, languageId, timeLimit, memoryLimit, tests} = body;
 

@@ -17,68 +17,70 @@ const CodeEditor = () => {
   const { theme } = useTheme();
   const {
     language,
+    functions,
     boilerplates,
     setBoilerplates,
     code,
     setCode,
-    functions,
-    setFunctions,
-    isDefault,
-    defaultCode,
     setFullBoilerplates,
   } = useCodeContext();
-  const { inputDescription, outputDescription, title } = useQuestionContext();
+  // const { inputDescription, outputDescription, title } = useQuestionContext();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function getBoiler(title: string | null, inputDesc: string | null, outputDesc: string | null) {
-      if (!title || !inputDesc || !outputDesc) return;
+    setCode(functions?.[language] || '');
 
-      try {
-        setLoading(true);
-        const res = await axios.post("/api/generator", {
-          title,
-          inputDescription: inputDesc,
-          outputDescription: outputDesc,
-        });
+  }, [language]);
 
-        const { boilers, fullBoilers, funcs } = res.data;
-        setBoilerplates(boilers);
-        setFunctions(funcs);
-        setFullBoilerplates(fullBoilers);
-      } catch (error) {
-        console.error("Error getting from generator:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
+  // useEffect(() => {
+  //   async function getBoiler(title: string | null, inputDesc: string | null, outputDesc: string | null) {
+  //     if (!title || !inputDesc || !outputDesc) return;
 
-    if (!isDefault && !functions) {
-      getBoiler(title, inputDescription, outputDescription);
-      console.log("switched to ai");
-    }
+  //     try {
+  //       setLoading(true);
+  //       const res = await axios.post("/api/generator", {
+  //         title,
+  //         inputDescription: inputDesc,
+  //         outputDescription: outputDesc,
+  //       });
 
-    // setCode(functions?.[language] || defaultCode?.[language]);
-    if (isDefault) {
-      try {
-        const stored = localStorage.getItem("uploadedCode");
-        const uploadedCode = stored ? JSON.parse(stored) as Record<string, string> : null;
+  //       const { boilers, fullBoilers, funcs } = res.data;
+  //       setBoilerplates(boilers);
+  //       setFunctions(funcs);
+  //       setFullBoilerplates(fullBoilers);
+  //     } catch (error) {
+  //       console.error("Error getting from generator:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+
+  //   if (!isDefault && !functions) {
+  //     getBoiler(title, inputDescription, outputDescription);
+  //     console.log("switched to ai");
+  //   }
+
+  //   // setCode(functions?.[language] || defaultCode?.[language]);
+  //   if (isDefault) {
+  //     try {
+  //       const stored = localStorage.getItem("uploadedCode");
+  //       const uploadedCode = stored ? JSON.parse(stored) as Record<string, string> : null;
   
-        if (uploadedCode && uploadedCode[language]) {
-          setCode(uploadedCode[language]);
-        } else {
-          setCode(defaultCode?.[language] || "");
-        }
-      } catch (err) {
-        console.error("Failed to parse uploadedCode from localStorage", err);
-        setCode(defaultCode?.[language] || "");
-      }
-    } else {
-      setCode(functions?.[language] || "");
-      // getBoiler(title, inputDescription, outputDescription);
-      console.log("switched to ai");
-    }
-  }, [isDefault,language]);
+  //       if (uploadedCode && uploadedCode[language]) {
+  //         setCode(uploadedCode[language]);
+  //       } else {
+  //         setCode(defaultCode?.[language] || "");
+  //       }
+  //     } catch (err) {
+  //       console.error("Failed to parse uploadedCode from localStorage", err);
+  //       setCode(defaultCode?.[language] || "");
+  //     }
+  //   } else {
+  //     setCode(functions?.[language] || "");
+  //     // getBoiler(title, inputDescription, outputDescription);
+  //     console.log("switched to ai");
+  //   }
+  // }, [isDefault,language]);
 
   return (
     <div className="relative">
@@ -90,7 +92,7 @@ const CodeEditor = () => {
           defaultLanguage="javascript"
           language={language}
           value={code || ""}
-          onChange={(newCode) => setCode(newCode || "")}
+          onChange={(newCode: any) => setCode(newCode || "")}
           theme={theme === "dark" ? "vs-dark" : "birds-of-paradise"}
           options={{
             minimap: {

@@ -1,9 +1,9 @@
 "use client"
 import { Button } from '../components/ui/button'
-import { Play } from 'lucide-react'
+import { Play, Loader2 } from 'lucide-react'
 import { useCodeContext } from '../providers/CodeProvider'
 import { useQuestionContext } from '@/providers/QuestionProvider'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { useResultContext } from '@/providers/ResultProvider'
 import { useToast } from '@/hooks/use-toast'
 
@@ -30,22 +30,29 @@ const RunButton = () => {
     // console.log( fullBoilerplates[language].replace('###USER CODE HERE###', code));
     // const runCode = boilerplates?.language.replace('###USER CODE HERE###', code);
     
-    const subCode = (boilerplates?.[language] || "").replace("##USER_CODE_HERE##", code || "");
+    const subCode = boilerplates?.[language].replace('###USER_CODE_HERE###', code??'') || '';
+    console.log(subCode);
+
     // console.log(subCode);
     // console.log(languageId);
     // console.log(tests);
     // console.log(timeLimit);
     // console.log(memoryLimit);
     
-    const res = await axios.post('/api/submission',{
-      subCode,
-      languageId,
-      tests,
-      timeLimit,
-      memoryLimit
-    });
-    if(res.status!=200){
-      if(res.status==429){
+    try {
+      const res = await axios.post('/api/submission',{
+        subCode,
+        languageId,
+        tests,
+        timeLimit,
+        memoryLimit
+      });
+      console.log(res);
+      setTokens(res.data.tokenString);
+      setExec(true);
+    }
+    catch(error: any){
+      if(error.status === 429){
         toast({
           title : "Uh Oh! Too many requests",
           description : "Please try again after some time" 
@@ -56,10 +63,8 @@ const RunButton = () => {
         title : "Uh oh! Something went wrong",
         description : "There was a problem with your request"
       })
-      return;
+        
     }
-    setTokens(res.data.tokenString);
-    setExec(true);
 
     // const tokenString = response.data.map(obj => obj.token).join(',');
 
@@ -78,16 +83,21 @@ const RunButton = () => {
 
 
   return (
-        <div className="container mx-auto px-4 py-2 flex justify-center">
-        <Button
-          onClick={handleRun}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
-        >
+    <div className="container mx-auto px-4 py-2 flex justify-center">
+      <Button
+        onClick={handleRun}
+        disabled={exec}
+        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
+      >
+        {exec ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : (
           <Play className="h-5 w-5" />
-          Run
-        </Button>
-      </div>
-    )
+        )}
+        {exec ? "Running..." : "Run"}
+      </Button>
+    </div>
+  );
 }
 
 export default RunButton

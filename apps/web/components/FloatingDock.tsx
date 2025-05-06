@@ -1,18 +1,26 @@
 "use client";
 
 import { useState } from 'react';
-import { Upload, Bot, X } from 'lucide-react';
+import { Upload, Bot, X, Save } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCodeContext } from '@/providers/CodeProvider';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Card } from './ui/card';
+import LanguageSelector from './LanguageSelector';
+import CodeEditor from './CodeEditor';
+import { HintsDrawer } from './HintsDrawer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast'
 
 export default function FloatingDock() {
   const [visible, setVisible] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [saveModalOpen, setSaveModalOpen] = useState(false); // 👈 new modal state
+  const [hintsDrawerOpen, setHintsDrawerOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const { isDefault, setIsDefault } = useCodeContext();
+  const { code, saveFunctions, language, resetFunctions } = useCodeContext();
+  const { toast } = useToast();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -49,11 +57,28 @@ export default function FloatingDock() {
     };
     reader.readAsText(selectedFile);
     setUploadModalOpen(false);
-    setSelectedFile(null); // Reset file selection after upload
+    setSelectedFile(null);
+  };
+
+  const handleReset = () => {
+    resetFunctions();
+    setSaveModalOpen(false);
+    toast({
+      title : "Code Reset",
+      description : "Your Code has been set to Default" 
+    })
+  };
+
+  const handleSave = () => {
+    saveFunctions();
+    toast({
+      title : "Code Saved",
+      description : "Your channges have been saved locally" 
+    })
   };
 
   return (
-    <div className='relative min-h-screen'>
+    <div className='relative'>
       <div
         className={cn(
           "fixed right-0 top-1/4 w-3 h-10 bg-muted-foreground rounded-l cursor-pointer", 
@@ -71,25 +96,27 @@ export default function FloatingDock() {
       >
         <button 
           className='p-3 bg-neutral-700 rounded hover:bg-gray-600'
-          onClick={() => setIsDefault(!isDefault)}
+          onClick={() => setHintsDrawerOpen(true)}
+          aria-label='Open Hints'
         >
           <Bot size={24} color='white' />
         </button>
         <button 
-          className='p-3 bg-neutral-700 rounded hover:bg-gray-600'
-          onClick={() => setUploadModalOpen(true)}
+          className=' flex p-3 bg-neutral-700 rounded hover:bg-gray-600'
+          onClick={ () => setSaveModalOpen(true)}
+          aria-label='Save code'
         >
-          <Upload size={24} color='white' />
+          <Save size={24} color='white' />
         </button>
         <button 
           className='p-3 bg-neutral-700 rounded hover:bg-gray-600'
           onClick={() => setVisible(false)}
+          aria-label='Close Dock'
         >
           <X size={24} color='white' />
         </button>
       </div>
       
-      {/* Upload Modal */}
       <Dialog open={uploadModalOpen} onOpenChange={setUploadModalOpen}>
         <DialogContent>
           <DialogHeader>
@@ -106,6 +133,37 @@ export default function FloatingDock() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={saveModalOpen} onOpenChange={setSaveModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Custom Settings</DialogTitle>
+          </DialogHeader>
+
+          {/* Your custom content goes here */}
+          <div className="mt-4 mb-6">
+          <Card className="p-4 flex-1">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <h2 className="text-xl font-semibold mb-4">Code Editor</h2>
+                <div className='flex gap-2 py-2 items-center'>
+                  <LanguageSelector className="mx-auto" />
+                </div>
+              </div>
+              <div className="mt-4">
+                <CodeEditor/>
+              </div>
+            </Card>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="destructive" onClick={handleReset}>Reset</Button>
+            <Button onClick={handleSave}>Save</Button>
+            <Button variant="outline" onClick={() => setSaveModalOpen(false)}>Cancel</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <HintsDrawer open={hintsDrawerOpen} onOpenChange={setHintsDrawerOpen} />
     </div>
   );
 }

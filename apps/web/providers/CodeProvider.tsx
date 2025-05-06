@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, ReactNode, useState, useContext } from "react";
+import { createContext, ReactNode, useState, useContext, useEffect } from "react";
 
 interface Language {
   value: string;
@@ -21,11 +21,15 @@ interface CodeContextType {
   fullBoilerplates:  Record<string,string> | null;
   setFullBoilerplates: (fullBoilerplates: Record<string, string> | null) => void;
   functions: Record<string, string> | null;
-  setFunctions: (functions: Record<string,string> | null) => void;
-  isDefault: boolean;
-  setIsDefault: (isDefault: boolean) => void;
-  defaultCode: Record<string, string>;
-  setDefaultCode: (defaultCode : Record<string, string>) => void;
+  setFunctions: (boilerplates: Record<string,string> | null) => void;
+  saveFunctions: () => void;
+  resetFunctions: () => void;
+  // functions: Record<string, string> | null;
+  // setFunctions: (functions: Record<string,string> | null) => void;
+  // isDefault: boolean;
+  // setIsDefault: (isDefault: boolean) => void;
+  // defaultCode: Record<string, string>;
+  // setDefaultCode: (defaultCode : Record<string, string>) => void;
 }
 
 const languages: Language[] = [
@@ -35,47 +39,180 @@ const languages: Language[] = [
   { value: "python", label: "Python", id: "100"},
 ];
 
+const defaultFunctions: Record<string, string> = {
+  'cpp': `class Solution {
+public:
+    int solve() {
+        
+    }
+};`,
+  'java': `class solution {
+  public static void solve(BufferedReader br) throws IOException {
+    //use br.readLine to take inputs
+  }
+}`,
+  'javascript': ``,
+  'python': `class Solution(object):
+  def solve(self, answers):
+`,
+};
+
+const defaultBoilerplates: Record<string, string> = {
+  'cpp': `
+#include <iostream>
+#include <vector>
+using namespace std;
+
+###USER_CODE_HERE###;
+
+int main() {
+    Solution sol;
+    sol.solve();
+
+    return 0;
+}`,
+  'java': `
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.abs;
+import java.io.*;
+import java.util.*;
+
+###USER_CODE_HERE###
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        solution.solve(br);  // Call using class name
+
+        br.close();
+    }
+}`,
+  'javascript': ``,
+  'python': `
+###USER_CODE_HERE###
+
+def main():
+    T = int(input())
+    sol = Solution();
+    for _ in range(T):
+        sol.solve()
+
+if __name__ == "__main__":
+    main()`,
+};
+
+const defaultFullBoilerplates: Record<string, string> = {
+  'cpp': `
+#include <iostream>
+#include <vector>
+using namespace std;
+
+###USER_CODE_HERE###;
+
+int main() {
+    int T;
+    cin >> T;
+    Solution sol;
+
+    while (T--) {
+        sol.solve();
+    }
+
+    return 0;
+}`,
+  'java': `
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.abs;
+import java.io.*;
+import java.util.*;
+
+###USER_CODE_HERE###
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
+
+        while (T-- > 0) {
+            solution.solve(br);  
+        }
+
+        br.close();
+    }
+}`,
+  'javascript': ``,
+  'python': `
+###USER_CODE_HERE###
+
+def main():
+    T = int(input())
+    sol = Solution();
+    for _ in range(T):
+        line = input()
+        sol.solve(line)
+
+if __name__ == "__main__":
+    main()`,
+};
+
 const CodeContext = createContext<CodeContextType | undefined>(undefined);
 
 export function CodeProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState("javascript");
-  const [boilerplates, setBoilerplates] = useState<Record<string,string> | null>(null);
+  const [functions, setFunctions] = useState<Record<string,string> | null>(null);
   const [fullBoilerplates, setFullBoilerplates] = useState<Record<string,string> | null>(null);
+  const [boilerplates, setBoilerplates] = useState<Record<string,string> | null>(null);
   const [languageId,setLanguageId] = useState("102");
   const [code,setCode] = useState<string | null>(null);
-  const [functions, setFunctions] = useState<Record<string,string> | null>(null);
-  const [defaultCode, setDefaultCode] = useState<Record<string, string>>({
-    "cpp": `#include <iostream>
+
+  useEffect(() => {
+    const storedFunctions = localStorage.getItem("functions");
+    const storedBoilerplates = localStorage.getItem("boilerplates");
+    const storedFullBoilerplates = localStorage.getItem("fullBoilerplates");
   
-  int main() {
-      std::cout << "Hello, World!" << std::endl;
-      return 0;
-  }`,
+    const parsedFunctions = storedFunctions ? JSON.parse(storedFunctions) : defaultFunctions;
+    setFunctions(parsedFunctions);
+    if (!storedFunctions) {
+      localStorage.setItem("functions", JSON.stringify(defaultFunctions));
+    }
   
-    "java": `public class Main {
-      public static void main(String[] args) {
-          System.out.println("Hello, World!");
-      }
-  }`,
+    const parsedBoilerplates = storedBoilerplates ? JSON.parse(storedBoilerplates) : defaultBoilerplates;
+    setBoilerplates(parsedBoilerplates);
+    if (!storedBoilerplates) {
+      localStorage.setItem("boilerplates", JSON.stringify(defaultBoilerplates));
+    }
   
-    "javascript": `function main() {
-      console.log("Hello, World!");
+    const parsedFullBoilerplates = storedFullBoilerplates ? JSON.parse(storedFullBoilerplates) : defaultFullBoilerplates;
+    setFullBoilerplates(parsedFullBoilerplates);
+    if (!storedFullBoilerplates) {
+      localStorage.setItem("fullBoilerplates", JSON.stringify(defaultFullBoilerplates));
+    }
+  }, []);
+
+  const saveFunctions = () => {
+    if (!code) return;
+    setFunctions((prev) => {
+      const updated = { ...(prev || {}), [language]: code };
+      localStorage.setItem("functions", JSON.stringify(updated));
+      setCode(updated[language]);
+      return updated;
+    });
+  };
+
+  const resetFunctions = () => {
+    setFunctions((prev) => {
+      const updated = { ...(prev || {}), [language]: defaultFunctions[language]};
+      localStorage.setItem("functions",JSON.stringify(updated));
+      setCode(updated[language]);
+      return updated;
+    });
   }
-  
-  main();`,
-  
-    "python": `def main():
-      print("Hello, World!")
-  
-  if __name__ == "__main__":
-      main()`
-  });
-  
-  const [isDefault, setIsDefault] = useState<boolean>(true);
 
   return (
     <CodeContext.Provider
-      value={{ languages, language, setLanguage, languageId, setLanguageId, boilerplates, code, setCode, setBoilerplates, functions, setFunctions, fullBoilerplates, setFullBoilerplates, defaultCode, setDefaultCode, isDefault, setIsDefault}}
+      value={{ languages, language, setLanguage, languageId, setLanguageId, boilerplates, code, setCode, setBoilerplates, fullBoilerplates, setFullBoilerplates, saveFunctions, functions, setFunctions, resetFunctions}}
     >
       {children}
     </CodeContext.Provider>

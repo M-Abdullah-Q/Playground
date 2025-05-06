@@ -6,13 +6,13 @@ import { useCodeContext } from "@/providers/CodeProvider";
 import { useState } from "react";
 
 const CopyButton = () => {
-  const { code } = useCodeContext();
+  const { code, fullBoilerplates, language } = useCodeContext();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     if (!code) return;
     try {
-      await navigator.clipboard.writeText(code);
+      await navigator.clipboard.writeText(fullBoilerplates?.[language].replace('###USER_CODE_HERE###', code) || '');
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch (err) {
@@ -30,12 +30,10 @@ const CopyButton = () => {
       {copied ? (
         <>
           <ClipboardCheck className="h-4 w-4 text-green-500" />
-          Copied
         </>
       ) : (
         <>
           <Clipboard className="h-4 w-4" />
-          Copy
         </>
       )}
     </Button>

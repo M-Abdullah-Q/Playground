@@ -20,10 +20,10 @@ interface DetailsType {
 
 export async function GET(req: NextRequest, { params }: { params: { id: string, ongoing: boolean } }) {
   try {
-    const { id, ongoing } = params;
-    if (!id) {
-      return NextResponse.json({ error: "Question not found" }, { status: 400 });
-    }
+    const searchParams = req.nextUrl.searchParams
+    const prms = await params;
+    const id = prms.id;
+    const ongoing = searchParams.get("ongoing") === "true";
 
     const probSeturl = `https://codeforces.com/problemset/problem/${id.slice(0, -1)}/${id.slice(-1).toUpperCase()}`;
     const contestUrl = `https://codeforces.com/contest/${id.slice(0, -1)}/problem/${id.slice(-1).toUpperCase()}`;
@@ -42,6 +42,22 @@ export async function GET(req: NextRequest, { params }: { params: { id: string, 
     // const TurndownServiceStr = TurndownService.toString();
 
     const details = await page.evaluate(() => {
+
+        function wrapMathWithKatexDelimiters(html: string): string {
+          const div = document.createElement("div");
+          div.innerHTML = html;
+      
+          div.querySelectorAll(".tex-math").forEach((el) => {
+            const latex = el.textContent?.trim() || "";
+            // Use block math for centered formulas, inline otherwise
+            const wrapper = document.createElement("span");
+            wrapper.innerHTML = `\\(${latex}\\)`; // or use $$...$$ if it's block-level
+            el.replaceWith(wrapper);
+          });
+      
+          return div.innerHTML;
+        }
+      
         // const TurndownService = eval(`(${TurndownServiceStr})`);
         // const turndownService = new TurndownService();
 
@@ -54,8 +70,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string, 
         const timeLimitElement = problemStatement.querySelector(".header .time-limit");
         const memoryLimitElement = problemStatement.querySelector(".header .memory-limit");
 
-        const descriptionHTML = problemStatement.children[1]?.innerHTML || "Description not found";
-        // console.log(descriptionHTML);
+        const rawDescription = problemStatement.children[1]?.innerHTML || "Description not found";
+        const descriptionHTML = rawDescription;
+        
         const inputDescriptionHTML = problemStatement.querySelector(".input-specification")?.innerHTML || "Input description not found";
         const outputDescriptionHTML = problemStatement.querySelector(".output-specification")?.innerHTML || "Output description not found";
 
@@ -150,9 +167,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string, 
       title: details.title,
       timeLimit: details.timeLimit,
       memoryLimit: details.memoryLimit,
-      description: details.description?.replaceAll('$$$',''),
-      inputDescription: turndownService.turndown(details.inputDescription || "" ).replaceAll('$$$',''),
-      outputDescription: turndownService.turndown(details.outputDescription|| "").replaceAll('$$$',''),
+      description: details.description,
+      inputDescription: details.inputDescription,
+      outputDescription: details.outputDescription,
       tests: details.tests,
     };
 
