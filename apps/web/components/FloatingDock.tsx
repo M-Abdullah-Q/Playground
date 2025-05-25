@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Upload, Bot, X, Save } from 'lucide-react';
+import { Sparkles, Upload, Bot, X, Save } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCodeContext } from '@/providers/CodeProvider';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -12,6 +12,12 @@ import { HintsDrawer } from './HintsDrawer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
 
 export default function FloatingDock() {
   const [visible, setVisible] = useState(false);
@@ -79,43 +85,68 @@ export default function FloatingDock() {
 
   return (
     <div className='relative'>
-      <div
-        className={cn(
-          "fixed right-0 top-1/4 w-3 h-10 bg-muted-foreground rounded-l cursor-pointer", 
-          visible ? 'opacity-0 translate-x-full' : 'opacity-100 translate-x-0'
-        )}
-        onMouseEnter={() => setVisible(true)}
-      ></div>
-      <div
-        className={cn(
-          'fixed right-2 top-1/4 flex flex-col gap-4 p-2 bg-neutral-900 rounded-lg shadow-lg transition-all',
-          visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'
-        )}
-        onMouseEnter={() => setVisible(true)}
-        onMouseLeave={() => setVisible(false)}
-      >
-        <button 
-          className='p-3 bg-neutral-700 rounded hover:bg-gray-600'
-          onClick={() => setHintsDrawerOpen(true)}
-          aria-label='Open Hints'
+      <TooltipProvider delayDuration={100}>
+        <div
+          className={cn(
+            "fixed right-0 top-1/4 w-3 h-10 bg-accent rounded-l cursor-pointer", 
+            visible ? 'opacity-0 translate-x-full' : 'opacity-100 translate-x-0'
+          )}
+          onMouseEnter={() => setVisible(true)}
+        ></div>
+        <div
+          className={cn(
+            'fixed right-2 top-1/4 flex flex-col gap-4 p-2 bg-accent rounded-lg shadow-lg transition-all',
+            visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'
+          )}
+          onMouseEnter={() => setVisible(true)}
+          onMouseLeave={() => setVisible(false)}
         >
-          <Bot size={24} color='white' />
-        </button>
-        <button 
-          className=' flex p-3 bg-neutral-700 rounded hover:bg-gray-600'
-          onClick={ () => setSaveModalOpen(true)}
-          aria-label='Save code'
-        >
-          <Save size={24} color='white' />
-        </button>
-        <button 
-          className='p-3 bg-neutral-700 rounded hover:bg-gray-600'
-          onClick={() => setVisible(false)}
-          aria-label='Close Dock'
-        >
-          <X size={24} color='white' />
-        </button>
-      </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+              <button 
+                className='p-3 bg-neutral-700 rounded hover:bg-gray-600'
+                onClick={() => setHintsDrawerOpen(true)}
+                aria-label='Open Hints'
+              >
+                <Sparkles size={24} color='white' />
+              </button>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              Hints
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>
+              <button 
+                className=' flex p-3 bg-neutral-700 rounded hover:bg-gray-600'
+                onClick={ () => setSaveModalOpen(true)}
+                aria-label='Save code'
+              >
+                <Save size={24} color='white' />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Saved Code
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>     
+              <button 
+                className='p-3 bg-neutral-700 rounded hover:bg-gray-600'
+                onClick={() => setVisible(false)}
+                aria-label='Close Dock'
+              >
+                <X size={24} color='white' />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Close
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      </TooltipProvider>
       
       <Dialog open={uploadModalOpen} onOpenChange={setUploadModalOpen}>
         <DialogContent>

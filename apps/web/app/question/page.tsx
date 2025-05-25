@@ -21,7 +21,7 @@ export default function Home() {
   // const [loading,setLoading] = useState(true);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-cover bg-center">
       <Header></Header>
       <CodenProvider>
         <RunButton />

@@ -57,6 +57,7 @@ export async function GET(req: NextRequest) {
                     if (pendingSubmissions.length === 0) {
                         res = {
                             statuses: submissionStatuses,
+                            compile_output: response.data.submissions.map((sub: any) => atob(sub.compile_output)),
                             stdout: response.data.submissions.map((sub: any) => atob(sub.stdout)),
                             stderr: response.data.submissions.map((sub: any) => atob(sub.stderr))
                         };

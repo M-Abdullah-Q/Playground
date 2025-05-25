@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input"
+import { Switch } from "@/components/ui/switch"
 
 export function QuestionInput() {
   const [question, setQuestion] = useState("")
@@ -30,15 +31,11 @@ export function QuestionInput() {
         onChange={(e) => setQuestion(e.target.value)}
         onSubmit={handleSubmit}
       />
-      <label className="flex items-center gap-2">
-        <input 
-          type="checkbox" 
-          checked={ongoing} 
-          onChange={(e) => setOngoing(!ongoing)} 
-          className="form-checkbox h-5 w-5 text-blue-600"
-        />
-        <div className="opacity-100 text-muted-foreground">Ongoing Contest?</div>
-      </label>
+      <Switch 
+        checked={ongoing} 
+        onCheckedChange={setOngoing} 
+      />
+      <span className="text-accent">Ongoing Contest?</span>
     </div>
   )
 }

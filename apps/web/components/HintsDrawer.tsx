@@ -9,20 +9,6 @@ interface HintsDrawerProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const HINTS = [
-  {
-    level: '1',
-    content: 'Start by breaking down the problem into smaller, manageable pieces. This makes complex tasks more approachable.',
-  },
-  {
-    level: '2',
-    content: 'Use meaningful variable names and add comments to make your code more readable and maintainable.',
-  },
-  {
-    level: '3',
-    content: 'Test your code with different inputs to ensure it handles edge cases correctly.',
-  },
-];
 
 export function HintsDrawer({ open, onOpenChange }: HintsDrawerProps) {
   const [isLoading, setIsLoading] = useState(true);
@@ -77,7 +63,7 @@ export function HintsDrawer({ open, onOpenChange }: HintsDrawerProps) {
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent >
         <DrawerHeader className="text-center">
-          <DrawerTitle>Coding Hints</DrawerTitle>
+          <DrawerTitle>Hints</DrawerTitle>
         </DrawerHeader>
         <div className="px-4 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">

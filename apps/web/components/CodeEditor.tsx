@@ -30,7 +30,7 @@ const CodeEditor = () => {
   useEffect(() => {
     setCode(functions?.[language] || '');
 
-  }, [language]);
+  }, [language, functions]);
 
   // useEffect(() => {
   //   async function getBoiler(title: string | null, inputDesc: string | null, outputDesc: string | null) {
@@ -91,7 +91,7 @@ const CodeEditor = () => {
           height="50vh"
           defaultLanguage="javascript"
           language={language}
-          value={code || ""}
+          value={code}
           onChange={(newCode: any) => setCode(newCode || "")}
           theme={theme === "dark" ? "vs-dark" : "birds-of-paradise"}
           options={{

@@ -25,9 +25,9 @@ const Header = () => {
             {/* <Button variant="outline">Sign Up</Button> */}
             {/* <Button>Login</Button> */}
             <ThemeToggle />
-            <Button variant="ghost" size="icon">
+            {/* <Button variant="ghost" size="icon">
               <Settings className="h-5 w-5" />
-            </Button>
+            </Button> */}
           </div>
         </div>
       </header>
