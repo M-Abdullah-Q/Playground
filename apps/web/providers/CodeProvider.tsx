@@ -14,8 +14,8 @@ interface CodeContextType {
   setLanguage: (lang: string) => void;
   languageId: string;
   setLanguageId: (langCode: string) => void;
-  code: string | null;
-  setCode: (code: string | null) => void;
+  code: string ;
+  setCode: (code: string ) => void;
   boilerplates: Record<string, string> | null;
   setBoilerplates: (boilerplates: Record<string,string> | null) => void;
   fullBoilerplates:  Record<string,string> | null;
@@ -51,7 +51,12 @@ public:
     //use br.readLine to take inputs
   }
 }`,
-  'javascript': ``,
+  'javascript': `class Solution {
+  solve() {
+    // Write your code here
+  }
+}
+`,
   'python': `class Solution(object):
   def solve(self, answers):
 `,
@@ -83,12 +88,20 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        solution.solve(br);  // Call using class name
+        solution.solve(br);  
 
         br.close();
     }
 }`,
-  'javascript': ``,
+  'javascript': `
+###USER_CODE_HERE###
+
+function main() {
+  const sol = new Solution();
+  sol.solve();
+}
+
+main();`,
   'python': `
 ###USER_CODE_HERE###
 
@@ -142,7 +155,35 @@ public class Main {
         br.close();
     }
 }`,
-  'javascript': ``,
+  'javascript': `
+###USER_CODE_HERE###
+
+function main() {
+  const readline = require('readline');
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  let inputLines = [];
+  rl.on('line', (line) => {
+    inputLines.push(line);
+  });
+
+  rl.on('close', () => {
+    let lineIndex = 0;
+    const T = parseInt(inputLines[lineIndex++]);
+    const sol = new Solution();
+
+    for (let i = 0; i < T; i++) {
+      // Assuming each test case might involve reading a line or more
+      // You might need to adjust this depending on how inputs are structured
+      sol.solve(inputLines[lineIndex++]); 
+    }
+  });
+}
+
+main();`,
   'python': `
 ###USER_CODE_HERE###
 
@@ -160,12 +201,12 @@ if __name__ == "__main__":
 const CodeContext = createContext<CodeContextType | undefined>(undefined);
 
 export function CodeProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState("javascript");
+  const [language, setLanguage] = useState("cpp");
   const [functions, setFunctions] = useState<Record<string,string> | null>(null);
   const [fullBoilerplates, setFullBoilerplates] = useState<Record<string,string> | null>(null);
   const [boilerplates, setBoilerplates] = useState<Record<string,string> | null>(null);
   const [languageId,setLanguageId] = useState("102");
-  const [code,setCode] = useState<string | null>(null);
+  const [code,setCode] = useState<string>(defaultBoilerplates['cpp']);
 
   useEffect(() => {
     const storedFunctions = localStorage.getItem("functions");

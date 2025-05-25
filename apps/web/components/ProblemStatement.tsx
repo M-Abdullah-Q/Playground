@@ -136,7 +136,7 @@ const ProblemStatement = () => {
                     {/* Input Description */}
                     {inputDescription && (
                         <div className="mt-4">
-                            <h3 className="text-lg font-medium mb-2">Input</h3>
+                            {/* <h3 className="text-lg font-medium mb-2">Input</h3> */}
                             <div 
                                 className="prose dark:prose-invert max-w-none"
                                 ref={inputRef}
@@ -148,12 +148,15 @@ const ProblemStatement = () => {
                     {/* Output Description */}
                     {outputDescription && (
                         <div className="mt-4">
-                            <h3 className="text-lg font-medium mb-2">Output</h3>
+                            {/* <h3 className="text-lg font-medium mb-2">Output</h3> */}
                             <div 
                                 className="prose dark:prose-invert max-w-none"
                                 ref={outputRef}
                                 dangerouslySetInnerHTML={{ __html: processedOutputDescription }} 
                             />
+                            <div className="mt-6 text-sm text-muted-foreground italic">
+                                <p><strong>Note:</strong> We do not support variations like <code>"YeS"</code>, <code>"yEs"</code>, etc. Please use exact case-sensitive outputs as expected.</p>
+                            </div>
                         </div>
                     )}
                 </div>

@@ -3,10 +3,18 @@
 import { motion } from "framer-motion"
 import { Code, Database, Braces, Cpu, Server, Zap } from "lucide-react"
 import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 
 export function FloatingElements() {
   const { theme } = useTheme()
   const isDark = theme === "dark"
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null // prevent hydration mismatch
 
   const icons = [
     { Icon: Code, x: "10%", y: "20%", size: 24, delay: 0 },
@@ -22,11 +30,10 @@ export function FloatingElements() {
       {icons.map((item, index) => (
         <motion.div
           key={index}
-          className={"absolute"}
+          className={"absolute text-accent"}
           style={{
             left: item.x,
             top: item.y,
-            color: isDark ? "rgba(168, 85, 247, 0.6)" : "rgba(168, 85, 247, 0.8)",
           }}
           initial={{ opacity: 0, y: 20 }}
           animate={{
